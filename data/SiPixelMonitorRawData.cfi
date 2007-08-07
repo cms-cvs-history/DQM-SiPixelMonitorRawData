@@ -1,0 +1,4 @@
+module SiPixelRawDataErrorSource = SiPixelRawDataErrorSource { 
+	InputTag src = siPixelRawDataErrors
+	string outputFile = "Pixel_DQM_Error.root"
+}
