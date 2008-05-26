@@ -2,4 +2,6 @@ module SiPixelRawDataErrorSource = SiPixelRawDataErrorSource {
 	InputTag src = siPixelDigis
 	string outputFile = "Pixel_DQM_Error.root"
 	untracked bool saveFile = false
+	untracked bool isPIB = false
+	untracked bool slowDown = false
 }
