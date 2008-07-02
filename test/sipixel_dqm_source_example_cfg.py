@@ -7,17 +7,23 @@ process.load("Geometry.TrackerGeometryBuilder.trackerGeometry_cfi")
 
 process.load("Geometry.TrackerNumberingBuilder.trackerNumberingGeometry_cfi")
 
+process.load("EventFilter.SiPixelRawToDigi.SiPixelRawToDigi_cfi")
+
+process.load("CondTools.SiPixel.SiPixelCalibConfiguration_cfi")
+
 process.load("DQM.SiPixelMonitorRawData.SiPixelMonitorRawData_cfi")
 
 process.load("DQMServices.Core.DQM_cfg")
 
+process.load("IORawData.SiPixelInputSources.PixelSLinkDataInputSource_cfi")
+
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(1000)
 )
-process.source = cms.Source("PoolSource",
-    debugFlag = cms.untracked.bool(True),
-    debugVebosity = cms.untracked.uint32(10),
-    fileNames = cms.untracked.vstring('file:digis.root')
+
+process.source = cms.Source("PixelSLinkDataInputSource",
+    fileNames = cms.untracked.vstring('rfio:/castor/cern.ch/cms/store/TAC/PIXEL/FPIX/HC-Z1/GainCalibration_35_2445.dmp'),
+    fedid = cms.untracked.int32(35)
 )
 
 process.LockService = cms.Service("LockService",
@@ -28,9 +34,20 @@ process.MessageLogger = cms.Service("MessageLogger",
     destinations = cms.untracked.vstring('debugmessages.txt')
 )
 
-process.p1 = cms.Path(process.SiPixelRawDataErrorSource)
+process.p1 = cms.Path(process.siPixelDigis*process.SiPixelRawDataErrorSource)
+process.sipixelcalib_essource.toGet = cms.VPSet(cms.PSet(
+                                                         record = cms.string('SiPixelCalibConfigurationRcd'),
+				                         tag = cms.string('GainCalibration_2445')
+				                        ),
+					        cms.PSet(
+                                                         record = cms.string('SiPixelFedCablingMapRcd'),
+				                         tag = cms.string('SiPixelFedCablingMap_v10')
+				                        )
+						)
+process.siPixelDigis.InputLabel = cms.untracked.string('source')
+process.siPixelDigis.IncludeErrors = True
 process.SiPixelRawDataErrorSource.saveFile = True
 process.SiPixelRawDataErrorSource.isPIB = False
-process.SiPixelDigiSource.slowDown = False
+process.SiPixelRawDataErrorSource.slowDown = False
 process.DQM.collectorHost = ''
 
