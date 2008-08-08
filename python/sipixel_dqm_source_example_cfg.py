@@ -17,13 +17,19 @@ process.load("DQMServices.Core.DQM_cfg")
 
 process.load("IORawData.SiPixelInputSources.PixelSLinkDataInputSource_cfi")
 
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+process.GlobalTag.connect ="sqlite_file:/afs/cern.ch/user/m/malgeri/public/globtag/CRUZET3_V7.db"
+process.GlobalTag.globaltag = "CRUZET3_V7::All"
+process.es_prefer_GlobalTag = cms.ESPrefer('PoolDBESSource','GlobalTag')
+
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(1000)
 )
 
-process.source = cms.Source("PixelSLinkDataInputSource",
-    fileNames = cms.untracked.vstring('rfio:/castor/cern.ch/cms/store/TAC/PIXEL/FPIX/HC-Z1/GainCalibration_35_2445.dmp'),
-    fedid = cms.untracked.int32(35)
+process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring('rfio:/castor/cern.ch/cms/store/TAC/PIXEL/P5/PixelAlive_34_53901.root'),
+    debugVerbosity = cms.untracked.uint32(10),
+    debugFlag = cms.untracked.bool(True),
 )
 
 process.LockService = cms.Service("LockService",
